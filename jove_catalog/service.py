@@ -12,7 +12,7 @@ class CatalogService(LocalService):
     def __init__(self, descriptor):
         self.descriptor = descriptor
 
-    def bootstrap(self, home, site):
+    def prebootstrap(self, home, site):
         folder = home.get(FOLDER_NAME)
         if folder is None:
             home[FOLDER_NAME] = folder = PersistentMapping()
