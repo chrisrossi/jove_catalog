@@ -7,10 +7,10 @@ class TestCatalogService(unittest2.TestCase):
         from jove_catalog.service import CatalogService
         return CatalogService(TestCatalogDescriptor())
 
-    def test_bootstrap(self):
+    def test_prebootstrap(self):
         home = {}
         service = self.make_one()
-        service.bootstrap(home, None)
+        service.prebootstrap(home, None)
         indexes = home['jove_catalog']['thename'].indexes
         self.assertEqual(indexes['foo'], 'one')
         self.assertEqual(indexes['bar'], 'two')
