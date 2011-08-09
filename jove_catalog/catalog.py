@@ -36,7 +36,7 @@ class Catalog(object):
             sort_type=sort_type,
             reverse=reverse,
             names=names)
-        return count, docids, self._resolver()
+        return count, docids, self.resolver()
 
     def _get_docid(self, doc):
         docid_attr = self.docid_attr
@@ -53,7 +53,7 @@ class Catalog(object):
                 document_map.add(path, docid)
         return docid
 
-    def _resolver(self):
+    def resolver(self):
         root = self.home['content']
         document_map = self.document_map
         def resolve(docid):
