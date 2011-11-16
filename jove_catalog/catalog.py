@@ -1,8 +1,12 @@
+import logging
+
 from pyramid.traversal import find_resource
 from pyramid.traversal import resource_path
 
 from repoze.catalog.catalog import Catalog as Indexes
 from repoze.catalog.document import DocumentMap
+
+log = logging.getLogger(__name__)
 
 
 class Catalog(object):
@@ -60,3 +64,15 @@ class Catalog(object):
             path = document_map.address_for_docid(docid)
             return find_resource(root, path)
         return resolve
+
+    def add_index(self, name, index):
+        """
+        Add an index to an existing catalog.
+        """
+        log.info('Adding index: %s' % name)
+        self.indexes[name] = index
+        resolver = self.resolver()
+        for docid in self.document_map.docid_to_address.keys():
+            doc = resolver(docid)
+            log.info('Calculating index for %s' % resource_path(doc))
+            index.index_doc(docid, doc)

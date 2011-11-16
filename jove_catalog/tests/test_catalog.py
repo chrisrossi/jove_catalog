@@ -19,6 +19,7 @@ class DummyCatalog(object):
         self.reindex_doc_called = []
         self.unindex_doc_called = []
         self.query_called = []
+        self.indexes_added = []
 
     def index_doc(self, docid, doc):
         self.index_doc_called.append((docid, doc))
@@ -33,6 +34,9 @@ class DummyCatalog(object):
         self.query_called.append((queryobject, sort_index, limit, sort_type,
                                   reverse, names))
         return 2, [100, 101]
+
+    def __setitem__(self, name, index):
+        self.indexes_added.append((name, index))
 
 
 class TestCatalog(unittest2.TestCase):
@@ -86,4 +90,17 @@ class TestCatalog(unittest2.TestCase):
         self.assertEqual(map(resolver, docids), [root['foo'], root['bar']])
         self.assertEqual(catalog.indexes.query_called, [('queryobject',
             'sort_index', 'limit', 'sort_type', 'reverse', 'names')])
+
+    @mock.patch('jove_catalog.catalog.Indexes', DummyCatalog)
+    def test_add_index(self):
+        catalog = self.make_one()
+        catalog.document_map.add('/foo', 100)
+        catalog.document_map.add('/bar', 101)
+        index = mock.Mock()
+        catalog.add_index('color', index)
+        self.assertEqual(catalog.indexes.indexes_added, [('color', index)])
+        root = self.home['content']
+        self.assertEqual(index.method_calls, [
+            ('index_doc', (100, root['foo']), {}),
+            ('index_doc', (101, root['bar']), {})])
 
