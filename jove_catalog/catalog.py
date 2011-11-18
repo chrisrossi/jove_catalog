@@ -29,6 +29,7 @@ class Catalog(object):
             docid = doc_or_docid
         else:
             docid = getattr(doc_or_docid, self.docid_attr)
+        self.document_map.remove_docid(docid)
         return self.indexes.unindex_doc(docid)
 
     def query(self, queryobject, sort_index=None, limit=None, sort_type=None,

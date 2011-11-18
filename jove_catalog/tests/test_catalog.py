@@ -63,18 +63,22 @@ class TestCatalog(unittest2.TestCase):
         catalog.reindex_doc(doc)
         self.assertEqual(catalog.indexes.reindex_doc_called, [(5, doc)])
 
+    @mock.patch('jove_catalog.catalog.DocumentMap')
     @mock.patch('jove_catalog.catalog.Indexes', DummyCatalog)
-    def test_unindex_doc(self):
+    def test_unindex_doc(self, DocumentMap):
         doc = testing.DummyResource(thedocid=5)
         catalog = self.make_one()
         catalog.unindex_doc(doc)
         self.assertEqual(catalog.indexes.unindex_doc_called, [5])
+        catalog.document_map.remove_docid.assert_called_once_with(5)
 
+    @mock.patch('jove_catalog.catalog.DocumentMap')
     @mock.patch('jove_catalog.catalog.Indexes', DummyCatalog)
-    def test_unindex_docid(self):
+    def test_unindex_docid(self, DocumentMap):
         catalog = self.make_one()
         catalog.unindex_doc(6)
         self.assertEqual(catalog.indexes.unindex_doc_called, [6])
+        catalog.document_map.remove_docid.assert_called_once_with(6)
 
     @mock.patch('jove_catalog.catalog.Indexes', DummyCatalog)
     def test_query(self):
