@@ -72,6 +72,12 @@ class TestCatalog(unittest2.TestCase):
         self.assertEqual(catalog.indexes.unindex_doc_called, [5])
         catalog.document_map.remove_docid.assert_called_once_with(5)
 
+    def test_unindex_doc_not_indexed(self):
+        # Just make sure noop doesn't raise an exception
+        doc = testing.DummyResource()
+        catalog = self.make_one()
+        catalog.unindex_doc(doc)
+
     @mock.patch('jove_catalog.catalog.DocumentMap')
     @mock.patch('jove_catalog.catalog.Indexes', DummyCatalog)
     def test_unindex_docid(self, DocumentMap):

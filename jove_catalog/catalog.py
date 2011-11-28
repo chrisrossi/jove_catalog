@@ -28,7 +28,9 @@ class Catalog(object):
         if type(doc_or_docid) in (int, long):
             docid = doc_or_docid
         else:
-            docid = getattr(doc_or_docid, self.docid_attr)
+            docid = getattr(doc_or_docid, self.docid_attr, None)
+            if docid is None:
+                return
         self.document_map.remove_docid(docid)
         return self.indexes.unindex_doc(docid)
 
